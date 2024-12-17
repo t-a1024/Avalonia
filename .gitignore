@@ -1,0 +1,63 @@
+# .NET Core / .NET 5+ / Avalonia 共通の.gitignore
+
+# ビルド出力
+bin/
+obj/
+*.exe
+*.dll
+*.pdb
+*.app
+*.ipa
+*.dSYM
+*.so
+*.idb
+*.log
+
+# Avaloniaアプリケーション関連ファイル
+*.db
+*.pid
+*.state
+*.tmp
+
+# Visual Studio関連
+.vs/
+.idea/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.sln.ide
+*.psess
+
+# Rider関連
+.idea/
+*.sln.iml
+
+# XAML Designer関連キャッシュ
+*.cache
+**/GeneratedMSBuildEditorConfig.*
+
+# nuget関連
+*.nupkg
+*.snupkg
+.nuget/
+packages/
+project.lock.json
+
+# Mac OS / Linux関連
+.DS_Store
+*.orig
+._*
+
+# JetBrains Rider / ReSharper関連
+_ReSharper*/
+*/_ReSharper.Caches/
+*.sln.DotSettings.user
+JetBrains/
+
+# ログファイル
+*.log
+
+# その他
+*.bak
+*.tmp
