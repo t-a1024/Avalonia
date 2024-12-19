@@ -1,6 +1,4 @@
 using Avalonia.Controls;
-using Avalonia.Media;
-using Avalonia;
 using Avalonia.Layout;
 
 public class GameCanvas : Canvas
@@ -18,6 +16,10 @@ public class GameCanvas : Canvas
         // GameCanvasに追加
         Children.Add(backDrop);  // 先に追加して背景として配置
         Children.Add(tableCanvas); // 次にtableCanvasを追加
+
+        // backDropの位置を設定
+        SetLeft(backDrop, 0);  // GameCanvas内の位置
+        SetTop(backDrop, 0);   // GameCanvas内の位置
 
         // TableCanvasの位置を設定
         SetLeft(tableCanvas, 100);  // GameCanvas内の位置
