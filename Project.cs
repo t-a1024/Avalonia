@@ -1,5 +1,6 @@
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Media;
 
 class Project
 {
@@ -15,6 +16,15 @@ class Project
         app.Styles.Add(new Avalonia.Themes.Fluent.FluentTheme());
         app.RequestedThemeVariant = Avalonia.Styling.ThemeVariant.Light;
 
-        app.Run(new StarterWindow().win);
+        var win = new Window{
+            Title = "W-mas v0.0",
+            Height = 720,
+            Width = 1280,
+            Background = Brushes.AliceBlue,
+            WindowStartupLocation = WindowStartupLocation.CenterScreen,
+        };
+
+        new GameWindowWithCanvas(win);
+        app.Run(win);
     }
 }
