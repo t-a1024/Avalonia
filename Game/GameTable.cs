@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Avalonia;
 using Avalonia.Controls;
@@ -14,14 +15,16 @@ public class GameTable
     private Canvas canvas;
 
     private static readonly string[] targetWords = ["あいうえお", "あえうえ", "おいお"]; // 消したい単語のリスト
+    private readonly List<string> removedWords = [];//　消した単語のリスト
+
 
     // 見た目のパラメータ
-    public double CellWidth { get; set; } = 30;
-    public double CellHeight { get; set; } = 30;
+    public double CellWidth { get; set; } = 20;
+    public double CellHeight { get; set; } = 20;
     public double BorderThickness { get; set; } = 1;
     public IBrush BorderBrush { get; set; } = Brushes.Black;
     public IBrush BackgroundBrush { get; set; } = Brushes.LightGray;
-    public double FontSize { get; set; } = 18;
+    public double FontSize { get; set; } = 12;
 
     public GameTable()
     {
@@ -158,6 +161,7 @@ public class GameTable
                         var wordLR = string.Join("", data[i].Skip(j).Take(length));
                         if (Array.Exists(targetWords, element => element == wordLR))
                         {
+                            removedWords.Add(wordLR); // 消去した単語を記録
                             for (int k = 0; k < length; k++) data[i][j + k] = ""; // 一致した単語を消去
                         }
                     }
@@ -168,6 +172,7 @@ public class GameTable
                         var wordRL = string.Join("", data[i].Skip(j - length + 1).Take(length).Reverse());
                         if (Array.Exists(targetWords, element => element == wordRL))
                         {
+                            removedWords.Add(wordRL); // 消去した単語を記録
                             for (int k = 0; k < length; k++) data[i][j - k] = ""; // 一致した単語を消去
                         }
                     }
@@ -188,6 +193,7 @@ public class GameTable
                         var wordUD = string.Join("", Enumerable.Range(0, length).Select(k => data[i + k][j]));
                         if (Array.Exists(targetWords, element => element == wordUD))
                         {
+                            removedWords.Add(wordUD); // 消去した単語を記録
                             for (int k = 0; k < length; k++) data[i + k][j] = ""; // 一致した単語を消去
                         }
                     }
@@ -198,6 +204,7 @@ public class GameTable
                         var wordDU = string.Join("", Enumerable.Range(0, length).Select(k => data[i - k][j]));
                         if (Array.Exists(targetWords, element => element == wordDU))
                         {
+                            removedWords.Add(wordDU); // 消去した単語を記録
                             for (int k = 0; k < length; k++) data[i - k][j] = ""; // 一致した単語を消去
                         }
                     }
@@ -218,6 +225,7 @@ public class GameTable
                         var wordLU = string.Join("", Enumerable.Range(0, length).Select(k => data[i + k][j + k]));
                         if (Array.Exists(targetWords, element => element == wordLU))
                         {
+                            removedWords.Add(wordLU); // 消去した単語を記録
                             for (int k = 0; k < length; k++) data[i + k][j + k] = ""; // 一致した単語を消去
                         }
                     }
@@ -228,6 +236,7 @@ public class GameTable
                         var wordRU = string.Join("", Enumerable.Range(0, length).Select(k => data[i + k][j - k]));
                         if (Array.Exists(targetWords, element => element == wordRU))
                         {
+                            removedWords.Add(wordRU); // 消去した単語を記録
                             for (int k = 0; k < length; k++) data[i + k][j - k] = ""; // 一致した単語を消去
                         }
                     }
@@ -238,6 +247,7 @@ public class GameTable
                         var wordLD = string.Join("", Enumerable.Range(0, length).Select(k => data[i - k][j + k]));
                         if (Array.Exists(targetWords, element => element == wordLD))
                         {
+                            removedWords.Add(wordLD); // 消去した単語を記録
                             for (int k = 0; k < length; k++) data[i - k][j + k] = ""; // 一致した単語を消去
                         }
                     }
@@ -248,6 +258,7 @@ public class GameTable
                         var wordRD = string.Join("", Enumerable.Range(0, length).Select(k => data[i - k][j - k]));
                         if (Array.Exists(targetWords, element => element == wordRD))
                         {
+                            removedWords.Add(wordRD); // 消去した単語を記録
                             for (int k = 0; k < length; k++) data[i - k][j - k] = ""; // 一致した単語を消去
                         }
                     }
@@ -255,7 +266,6 @@ public class GameTable
             }
         }
     }
-
 
 
     private static char GetRandomJapaneseChar()
