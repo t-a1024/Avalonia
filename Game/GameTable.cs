@@ -7,10 +7,13 @@ using Avalonia.Media;
 public class GameTable
 {
     private readonly string[][] data;
+    private Border draggingElement;
+    private Avalonia.Point originalPosition;
+    private (int row, int col)? originalIndex;
+    private Canvas canvas;
 
     public GameTable()
     {
-        // 10×20の2次元配列を初期化
         data = new string[20][];
         for (int i = 0; i < data.Length; i++)
         {
@@ -24,56 +27,133 @@ public class GameTable
 
     public Canvas TableCanvas()
     {
-        // Canvasの作成
-        var canvas = new Canvas
+        UpdateTable();
+        return canvas;
+    }
+
+    private Border CreateBorder(int row, int col)
+    {
+        var border = new Border
         {
-            HorizontalAlignment = HorizontalAlignment.Stretch,
-            VerticalAlignment = VerticalAlignment.Stretch,
-            Background = Brushes.LightGray,
-            Width = 200,
-            Height = 400
+            BorderBrush = Brushes.Black,
+            BorderThickness = new Thickness(1),
+            Width = 20,
+            Height = 20
         };
-        // dataの内容に基づいて要素を追加
+
+        var textBlock = new TextBlock
+        {
+            Text = data[row][col],
+            FontSize = 12,
+            HorizontalAlignment = HorizontalAlignment.Center,
+            VerticalAlignment = VerticalAlignment.Center
+        };
+
+        border.Child = textBlock;
+
+        border.PointerPressed += (s, e) =>
+        {
+            draggingElement = border;
+            originalPosition = e.GetPosition((Visual)border.Parent!);
+            originalIndex = (row, col);
+        };
+
+        border.PointerMoved += (s, e) =>
+        {
+            if (draggingElement != null && e.GetCurrentPoint((Visual)border.Parent!).Properties.IsLeftButtonPressed)
+            {
+                var position = e.GetPosition((Visual)draggingElement.Parent!);
+                Canvas.SetLeft(draggingElement, position.X - 10); // 中心を合わせる
+                Canvas.SetTop(draggingElement, position.Y - 10);
+            }
+        };
+
+        border.PointerReleased += (s, e) =>
+        {
+            if (draggingElement != null)
+            {
+                // 新しい位置の計算とデータ更新
+                var canvas = (Canvas)draggingElement.Parent!;
+                var position = e.GetPosition(canvas);
+                var newRow = (int)(position.Y / 20);
+                var newCol = (int)(position.X / 20);
+
+                if (newRow >= 0 && newRow < data.Length && newCol >= 0 && newCol < data[0].Length)
+                {
+                    // 入れ替え
+                    var oldIndex = originalIndex!.Value;
+                    var pre = data[newRow][newCol];
+                    data[newRow][newCol] = data[oldIndex.row][oldIndex.col];
+                    data[oldIndex.row][oldIndex.col] = pre;
+                    Console.WriteLine("全データ:");
+                    for (int i = 0; i < data.Length; i++)
+                    {
+                        for (int j = 0; j < data[i].Length; j++)
+                        {
+                            Console.Write(data[i][j] + " ");
+                        }
+                        Console.WriteLine();
+                    }
+
+                    // ドラッグ要素の位置を更新
+                    Canvas.SetLeft(draggingElement, newCol * 20);
+                    Canvas.SetTop(draggingElement, newRow * 20);
+
+                    // 更新されたデータに基づいてCanvasを再描画
+                    UpdateTable();
+                }
+            }
+
+            // ドラッグ状態を解除
+            draggingElement = null;
+        };
+
+        return border;
+    }
+
+    private void UpdateTable()
+    {
+        // 新しいCanvasを作成する前に、既存のCanvasの内容をクリア
+        if (canvas != null)
+        {
+            canvas.Children.Clear(); // 古い子要素を削除
+        }else{
+            canvas = new Canvas
+            {
+                Background = Brushes.LightGray,
+                Width = 200,
+                Height = 400
+            };
+        }
+
         for (int i = 0; i < data.Length; i++)
         {
             for (int j = 0; j < data[i].Length; j++)
             {
-                // Borderを作成して枠線を設定
-                var border = new Border
-                {
-                    BorderBrush = Brushes.Black, // 枠線の色
-                    BorderThickness = new Thickness(1), // 枠線の太さ
-                    Width = 20,  // 横幅
-                    Height = 20, // 高さ
-                    HorizontalAlignment = HorizontalAlignment.Center,
-                    VerticalAlignment = VerticalAlignment.Center,
-                };
-
-                // Border内にTextBlockを配置
-                var textBlock = new TextBlock
-                {
-                    Text = data[i][j],
-                    FontSize = 12,
-                    HorizontalAlignment = HorizontalAlignment.Center,
-                    VerticalAlignment = VerticalAlignment.Center,
-                    Foreground = Brushes.Black,
-                };
-
-                border.Child = textBlock; // TextBlockをBorder内に設定
-
-                // BorderをCanvasに追加し、位置を設定
+                var border = CreateBorder(i, j);
                 canvas.Children.Add(border);
-                Canvas.SetLeft(border, j * 20); // 横方向の位置
-                Canvas.SetTop(border, i * 20);  // 縦方向の位置
+                Canvas.SetLeft(border, j * 20);
+                Canvas.SetTop(border, i * 20);
             }
         }
-        return canvas;
     }
 
+
     private static char GetRandomJapaneseChar()
-    {
-        var rand = new Random();
-        // Unicodeで日本語の範囲を指定（ここではひらがな範囲を使用）
-        return (char)rand.Next(0x3040, 0x309F); // Unicode範囲: ひらがな
-    }
+{
+    // ひらがな50音と濁音をリストに格納
+    string[] hiragana =
+    [
+        "あ", "い", "う", "え", "お", "か", "き", "く", "け", "こ", "さ", "し", "す", "せ", "そ",
+        "た", "ち", "つ", "て", "と", "な", "に", "ぬ", "ね", "の", "は", "ひ", "ふ", "へ", "ほ",
+        "ま", "み", "む", "め", "も", "や", "ゆ", "よ", "ら", "り", "る", "れ", "ろ", "わ", "を", "ん",
+        "が", "ぎ", "ぐ", "げ", "ご", "ざ", "じ", "ず", "ぜ", "ぞ", "だ", "ぢ", "づ", "で", "ど",
+        "ば", "び", "ぶ", "べ", "ぼ", "ぱ", "ぴ", "ぷ", "ぺ", "ぽ", "ゃ", "ゅ", "ょ", "っ"
+    ];
+
+    var rand = new Random();
+    int index = rand.Next(hiragana.Length);
+    return hiragana[index][0]; // ランダムにひらがなを選んで返す
+}
+
 }
