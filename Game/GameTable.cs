@@ -265,10 +265,43 @@ public class GameTable
                 }
             }
         }
+        ShiftDownInRows();
     }
 
+private void ShiftDownInRows()
+{
+    // 行方向に処理
+    for (int j = 0; j < data[0].Length; j++)  // 列をループ
+    {
+        int writeIndex = data.Length - 1; // 書き込み位置を一番下から始める
+
+        // 各列のデータを下に詰める
+        for (int i = data.Length - 1; i >= 0; i--)  // 行を逆順にループ
+        {
+            if (data[i][j] != "")  // 空文字でない場合
+            {
+                data[writeIndex][j] = data[i][j];  // 下に詰める
+                if (writeIndex != i)
+                {
+                    data[i][j] = "";  // 元の位置に空文字を設定
+                }
+                writeIndex--;  // 次の書き込み位置に進む
+            }
+        }
+
+        // 空文字を残りの位置に入れる（詰めた後の上部分を空文字にする）
+        for (int i = writeIndex; i >= 0; i--)
+        {
+            data[i][j] = "";  // 残りの空いている位置に空文字を設定
+        }
+    }
+}
+
+
+
+
     private void RemovedWord(string word){
-        RemovedWord(word);
+        removedWords.Add(word);
     }
 
     // 消された単語を取得するメソッド
