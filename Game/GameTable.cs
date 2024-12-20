@@ -166,7 +166,7 @@ public class GameTable
                         if (Array.Exists(targetWords, element => element == wordLR))
                         {
                             await RemovedWord(wordLR); // 消去した単語を記録
-                            for (int k = 0; k < length; k++) data[i][j + k] = ""; // 一致した単語を消去
+                            for (int k = 0; k < length; k++) data[i][j + k] = " "; // 一致した単語を消去
                         }
                     }
 
@@ -177,7 +177,7 @@ public class GameTable
                         if (Array.Exists(targetWords, element => element == wordRL))
                         {
                             await RemovedWord(wordRL); // 消去した単語を記録
-                            for (int k = 0; k < length; k++) data[i][j - k] = ""; // 一致した単語を消去
+                            for (int k = 0; k < length; k++) data[i][j - k] = " "; // 一致した単語を消去
                         }
                     }
                 }
@@ -198,7 +198,7 @@ public class GameTable
                         if (Array.Exists(targetWords, element => element == wordUD))
                         {
                             await RemovedWord(wordUD); // 消去した単語を記録
-                            for (int k = 0; k < length; k++) data[i + k][j] = ""; // 一致した単語を消去
+                            for (int k = 0; k < length; k++) data[i + k][j] = " "; // 一致した単語を消去
                         }
                     }
 
@@ -209,7 +209,7 @@ public class GameTable
                         if (Array.Exists(targetWords, element => element == wordDU))
                         {
                             await RemovedWord(wordDU); // 消去した単語を記録
-                            for (int k = 0; k < length; k++) data[i - k][j] = ""; // 一致した単語を消去
+                            for (int k = 0; k < length; k++) data[i - k][j] = " "; // 一致した単語を消去
                         }
                     }
                 }
@@ -230,7 +230,7 @@ public class GameTable
                         if (Array.Exists(targetWords, element => element == wordLU))
                         {
                             await RemovedWord(wordLU); // 消去した単語を記録
-                            for (int k = 0; k < length; k++) data[i + k][j + k] = ""; // 一致した単語を消去
+                            for (int k = 0; k < length; k++) data[i + k][j + k] = " "; // 一致した単語を消去
                         }
                     }
 
@@ -241,7 +241,7 @@ public class GameTable
                         if (Array.Exists(targetWords, element => element == wordRU))
                         {
                             await RemovedWord(wordRU); // 消去した単語を記録
-                            for (int k = 0; k < length; k++) data[i + k][j - k] = ""; // 一致した単語を消去
+                            for (int k = 0; k < length; k++) data[i + k][j - k] = " "; // 一致した単語を消去
                         }
                     }
 
@@ -252,7 +252,7 @@ public class GameTable
                         if (Array.Exists(targetWords, element => element == wordLD))
                         {
                             await RemovedWord(wordLD); // 消去した単語を記録
-                            for (int k = 0; k < length; k++) data[i - k][j + k] = ""; // 一致した単語を消去
+                            for (int k = 0; k < length; k++) data[i - k][j + k] = " "; // 一致した単語を消去
                         }
                     }
 
@@ -263,7 +263,7 @@ public class GameTable
                         if (Array.Exists(targetWords, element => element == wordRD))
                         {
                             await RemovedWord(wordRD); // 消去した単語を記録
-                            for (int k = 0; k < length; k++) data[i - k][j - k] = ""; // 一致した単語を消去
+                            for (int k = 0; k < length; k++) data[i - k][j - k] = " "; // 一致した単語を消去
                         }
                     }
                 }
@@ -282,12 +282,12 @@ public class GameTable
             // 各列のデータを下に詰める
             for (int i = data.Length - 1; i >= 0; i--)  // 行を逆順にループ
             {
-                if (data[i][j] != "")  // 空文字でない場合
+                if (data[i][j] != " ")  // 空文字でない場合
                 {
                     data[writeIndex][j] = data[i][j];  // 下に詰める
                     if (writeIndex != i)
                     {
-                        data[i][j] = "";  // 元の位置に空文字を設定
+                        data[i][j] = " ";  // 元の位置に空文字を設定
                     }
                     writeIndex--;  // 次の書き込み位置に進む
                 }
@@ -296,7 +296,7 @@ public class GameTable
             // 空文字を残りの位置に入れる（詰めた後の上部分を空文字にする）
             for (int i = writeIndex; i >= 0; i--)
             {
-                data[i][j] = "";  // 残りの空いている位置に空文字を設定
+                data[i][j] = " ";  // 残りの空いている位置に空文字を設定
             }
         }
     }
