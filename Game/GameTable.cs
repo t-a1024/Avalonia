@@ -106,10 +106,18 @@ public class GameTable
                     Canvas.SetLeft(draggingElement, newCol * CellWidth);
                     Canvas.SetTop(draggingElement, newRow * CellHeight);
 
-                    // 新しい位置に移動後、特定の単語が並んでいるかチェック
-                    await CheckForMatchingWordsAsync();
 
-                    UpdateTable();
+                    bool flag = true;
+                    // 新しい位置に移動後、特定の単語が並んでいるかチェック
+                    while (flag)
+                    {
+                        flag = await CheckForMatchingWordsAsync();
+                        ShiftDownInRows();
+                        await Dispatcher.UIThread.InvokeAsync(UpdateTable);
+                        await Task.Delay(1000);
+                        FillEmptySpacesWithRandomJapaneseChars();
+                        UpdateTable();
+                    }
                 }
             }
 
@@ -148,9 +156,11 @@ public class GameTable
     }
 
     // 特定の単語が並んでいるかを確認して消去
-    private async Task CheckForMatchingWordsAsync()
+    private async Task<bool> CheckForMatchingWordsAsync()
     {
         int maxWordLength = targetWords.Max(word => word.Length);
+
+        bool foundMatch = false; // 単語が見つかったかを記録
 
         // 横方向のチェック（左から右、右から左）
         for (int i = 0; i < data.Length; i++)
@@ -165,6 +175,7 @@ public class GameTable
                         var wordLR = string.Join("", data[i].Skip(j).Take(length));
                         if (Array.Exists(targetWords, element => element == wordLR))
                         {
+                            foundMatch = true;
                             await RemovedWord(wordLR); // 消去した単語を記録
                             for (int k = 0; k < length; k++) data[i][j + k] = " "; // 一致した単語を消去
                         }
@@ -176,6 +187,7 @@ public class GameTable
                         var wordRL = string.Join("", data[i].Skip(j - length + 1).Take(length).Reverse());
                         if (Array.Exists(targetWords, element => element == wordRL))
                         {
+                            foundMatch = true;
                             await RemovedWord(wordRL); // 消去した単語を記録
                             for (int k = 0; k < length; k++) data[i][j - k] = " "; // 一致した単語を消去
                         }
@@ -197,6 +209,7 @@ public class GameTable
                         var wordUD = string.Join("", Enumerable.Range(0, length).Select(k => data[i + k][j]));
                         if (Array.Exists(targetWords, element => element == wordUD))
                         {
+                            foundMatch = true;
                             await RemovedWord(wordUD); // 消去した単語を記録
                             for (int k = 0; k < length; k++) data[i + k][j] = " "; // 一致した単語を消去
                         }
@@ -208,6 +221,7 @@ public class GameTable
                         var wordDU = string.Join("", Enumerable.Range(0, length).Select(k => data[i - k][j]));
                         if (Array.Exists(targetWords, element => element == wordDU))
                         {
+                            foundMatch = true;
                             await RemovedWord(wordDU); // 消去した単語を記録
                             for (int k = 0; k < length; k++) data[i - k][j] = " "; // 一致した単語を消去
                         }
@@ -229,6 +243,7 @@ public class GameTable
                         var wordLU = string.Join("", Enumerable.Range(0, length).Select(k => data[i + k][j + k]));
                         if (Array.Exists(targetWords, element => element == wordLU))
                         {
+                            foundMatch = true;
                             await RemovedWord(wordLU); // 消去した単語を記録
                             for (int k = 0; k < length; k++) data[i + k][j + k] = " "; // 一致した単語を消去
                         }
@@ -240,6 +255,7 @@ public class GameTable
                         var wordRU = string.Join("", Enumerable.Range(0, length).Select(k => data[i + k][j - k]));
                         if (Array.Exists(targetWords, element => element == wordRU))
                         {
+                            foundMatch = true;
                             await RemovedWord(wordRU); // 消去した単語を記録
                             for (int k = 0; k < length; k++) data[i + k][j - k] = " "; // 一致した単語を消去
                         }
@@ -251,6 +267,7 @@ public class GameTable
                         var wordLD = string.Join("", Enumerable.Range(0, length).Select(k => data[i - k][j + k]));
                         if (Array.Exists(targetWords, element => element == wordLD))
                         {
+                            foundMatch = true;
                             await RemovedWord(wordLD); // 消去した単語を記録
                             for (int k = 0; k < length; k++) data[i - k][j + k] = " "; // 一致した単語を消去
                         }
@@ -262,6 +279,7 @@ public class GameTable
                         var wordRD = string.Join("", Enumerable.Range(0, length).Select(k => data[i - k][j - k]));
                         if (Array.Exists(targetWords, element => element == wordRD))
                         {
+                            foundMatch = true;
                             await RemovedWord(wordRD); // 消去した単語を記録
                             for (int k = 0; k < length; k++) data[i - k][j - k] = " "; // 一致した単語を消去
                         }
@@ -269,7 +287,8 @@ public class GameTable
                 }
             }
         }
-        ShiftDownInRows();
+        //結果を返す
+        return foundMatch;
     }
 
     private void ShiftDownInRows()
@@ -301,14 +320,27 @@ public class GameTable
         }
     }
 
-
+    //文字を埋める
+    private void FillEmptySpacesWithRandomJapaneseChars()
+    {
+        for (int i = 0; i < data.Length; i++)
+        {
+            for (int j = 0; j < data[i].Length; j++)
+            {
+                if (data[i][j] == " ") // 空文字の場合
+                {
+                    data[i][j] = GetRandomJapaneseChar().ToString();
+                }
+            }
+        }
+    }
 
 
     private async Task RemovedWord(string word){
         removedWords.Add(word);
         await Dispatcher.UIThread.InvokeAsync(UpdateTable);
         Stopwatch stopwatch = Stopwatch.StartNew();
-        await Task.Delay(1000);
+        await Task.Delay(100);
     }
 
     // 消された単語を取得するメソッド
