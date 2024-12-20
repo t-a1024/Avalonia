@@ -1,8 +1,10 @@
 using System;
+using System.Linq;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Layout;
 using Avalonia.Media;
+
 public class GameTable
 {
     private readonly string[][] data;
@@ -11,7 +13,15 @@ public class GameTable
     private (int row, int col)? originalIndex;
     private Canvas canvas;
 
-    private static readonly string[] targetWords = { "あい", "うえ", "おお" }; // 消したい単語のリスト
+    private static readonly string[] targetWords = ["あいうえお", "あえうえ", "おいお"]; // 消したい単語のリスト
+
+    // 見た目のパラメータ
+    public double CellWidth { get; set; } = 30;
+    public double CellHeight { get; set; } = 30;
+    public double BorderThickness { get; set; } = 1;
+    public IBrush BorderBrush { get; set; } = Brushes.Black;
+    public IBrush BackgroundBrush { get; set; } = Brushes.LightGray;
+    public double FontSize { get; set; } = 18;
 
     public GameTable()
     {
@@ -36,16 +46,16 @@ public class GameTable
     {
         var border = new Border
         {
-            BorderBrush = Brushes.Black,
-            BorderThickness = new Thickness(1),
-            Width = 20,
-            Height = 20
+            BorderBrush = BorderBrush,
+            BorderThickness = new Thickness(BorderThickness),
+            Width = CellWidth,
+            Height = CellHeight
         };
 
         var textBlock = new TextBlock
         {
             Text = data[row][col],
-            FontSize = 12,
+            FontSize = FontSize,
             HorizontalAlignment = HorizontalAlignment.Center,
             VerticalAlignment = VerticalAlignment.Center
         };
@@ -64,8 +74,8 @@ public class GameTable
             if (draggingElement != null && e.GetCurrentPoint((Visual)border.Parent!).Properties.IsLeftButtonPressed)
             {
                 var position = e.GetPosition((Visual)draggingElement.Parent!);
-                Canvas.SetLeft(draggingElement, position.X - 10); // 中心を合わせる
-                Canvas.SetTop(draggingElement, position.Y - 10);
+                Canvas.SetLeft(draggingElement, position.X - CellWidth / 2); // 中心を合わせる
+                Canvas.SetTop(draggingElement, position.Y - CellHeight / 2);
             }
         };
 
@@ -75,8 +85,8 @@ public class GameTable
             {
                 var canvas = (Canvas)draggingElement.Parent!;
                 var position = e.GetPosition(canvas);
-                var newRow = (int)(position.Y / 20);
-                var newCol = (int)(position.X / 20);
+                var newRow = (int)(position.Y / CellHeight);
+                var newCol = (int)(position.X / CellWidth);
 
                 if (newRow >= 0 && newRow < data.Length && newCol >= 0 && newCol < data[0].Length)
                 {
@@ -89,8 +99,8 @@ public class GameTable
                     CheckForMatchingWords();
 
                     // ドラッグ要素の位置を更新
-                    Canvas.SetLeft(draggingElement, newCol * 20);
-                    Canvas.SetTop(draggingElement, newRow * 20);
+                    Canvas.SetLeft(draggingElement, newCol * CellWidth);
+                    Canvas.SetTop(draggingElement, newRow * CellHeight);
 
                     UpdateTable();
                 }
@@ -112,9 +122,9 @@ public class GameTable
         {
             canvas = new Canvas
             {
-                Background = Brushes.LightGray,
-                Width = 200,
-                Height = 400
+                Background = BackgroundBrush,
+                Width = CellWidth * data[0].Length,
+                Height = CellHeight * data.Length
             };
         }
 
@@ -124,8 +134,8 @@ public class GameTable
             {
                 var border = CreateBorder(i, j);
                 canvas.Children.Add(border);
-                Canvas.SetLeft(border, j * 20);
-                Canvas.SetTop(border, i * 20);
+                Canvas.SetLeft(border, j * CellWidth);
+                Canvas.SetTop(border, i * CellHeight);
             }
         }
     }
@@ -133,25 +143,34 @@ public class GameTable
     // 特定の単語が並んでいるかを確認して消去
     private void CheckForMatchingWords()
     {
+        int maxWordLength = targetWords.Max(word => word.Length);
+
         // 横方向のチェック（左から右、右から左）
         for (int i = 0; i < data.Length; i++)
         {
-            for (int j = 0; j <= data[i].Length - 2; j++)
+            for (int j = 0; j < data[i].Length; j++)
             {
-                // 左から右のチェック
-                var wordLR = data[i][j] + data[i][j + 1];
-                if (Array.Exists(targetWords, element => element == wordLR))
+                for (int length = 2; length <= maxWordLength; length++) // 長さ2以上の単語をチェック
                 {
-                    data[i][j] = "";
-                    data[i][j + 1] = "";
-                }
+                    if (j + length <= data[i].Length)
+                    {
+                        // 左から右のチェック
+                        var wordLR = string.Join("", data[i].Skip(j).Take(length));
+                        if (Array.Exists(targetWords, element => element == wordLR))
+                        {
+                            for (int k = 0; k < length; k++) data[i][j + k] = ""; // 一致した単語を消去
+                        }
+                    }
 
-                // 右から左のチェック
-                var wordRL = data[i][j + 1] + data[i][j];
-                if (Array.Exists(targetWords, element => element == wordRL))
-                {
-                    data[i][j] = "";
-                    data[i][j + 1] = "";
+                    if (j - length + 1 >= 0)
+                    {
+                        // 右から左のチェック
+                        var wordRL = string.Join("", data[i].Skip(j - length + 1).Take(length).Reverse());
+                        if (Array.Exists(targetWords, element => element == wordRL))
+                        {
+                            for (int k = 0; k < length; k++) data[i][j - k] = ""; // 一致した単語を消去
+                        }
+                    }
                 }
             }
         }
@@ -159,77 +178,97 @@ public class GameTable
         // 縦方向のチェック（上から下、下から上）
         for (int j = 0; j < data[0].Length; j++)
         {
-            for (int i = 0; i <= data.Length - 2; i++)
+            for (int i = 0; i < data.Length; i++)
             {
-                // 上から下のチェック
-                var wordUD = data[i][j] + data[i + 1][j];
-                if (Array.Exists(targetWords, element => element == wordUD))
+                for (int length = 2; length <= maxWordLength; length++) // 長さ2以上の単語をチェック
                 {
-                    data[i][j] = "";
-                    data[i + 1][j] = "";
-                }
+                    if (i + length <= data.Length)
+                    {
+                        // 上から下のチェック
+                        var wordUD = string.Join("", Enumerable.Range(0, length).Select(k => data[i + k][j]));
+                        if (Array.Exists(targetWords, element => element == wordUD))
+                        {
+                            for (int k = 0; k < length; k++) data[i + k][j] = ""; // 一致した単語を消去
+                        }
+                    }
 
-                // 下から上のチェック
-                var wordDU = data[i + 1][j] + data[i][j];
-                if (Array.Exists(targetWords, element => element == wordDU))
-                {
-                    data[i][j] = "";
-                    data[i + 1][j] = "";
+                    if (i - length + 1 >= 0)
+                    {
+                        // 下から上のチェック
+                        var wordDU = string.Join("", Enumerable.Range(0, length).Select(k => data[i - k][j]));
+                        if (Array.Exists(targetWords, element => element == wordDU))
+                        {
+                            for (int k = 0; k < length; k++) data[i - k][j] = ""; // 一致した単語を消去
+                        }
+                    }
                 }
             }
         }
 
-        // 斜め方向のチェック（左上から右下、右上から左下、左下から右上、右下から左上）
-        for (int i = 0; i < data.Length - 1; i++)
+        // 斜め方向のチェック
+        for (int i = 0; i < data.Length; i++)
         {
-            for (int j = 0; j < data[i].Length - 1; j++)
+            for (int j = 0; j < data[i].Length; j++)
             {
-                // 左上から右下のチェック
-                var wordLR = data[i][j] + data[i + 1][j + 1];
-                if (Array.Exists(targetWords, element => element == wordLR))
+                for (int length = 2; length <= maxWordLength; length++) // 長さ2以上の単語をチェック
                 {
-                    data[i][j] = "";
-                    data[i + 1][j + 1] = "";
-                }
+                    if (i + length <= data.Length && j + length <= data[i].Length)
+                    {
+                        // 左上から右下
+                        var wordLU = string.Join("", Enumerable.Range(0, length).Select(k => data[i + k][j + k]));
+                        if (Array.Exists(targetWords, element => element == wordLU))
+                        {
+                            for (int k = 0; k < length; k++) data[i + k][j + k] = ""; // 一致した単語を消去
+                        }
+                    }
 
-                // 右上から左下のチェック
-                var wordRL = data[i][j + 1] + data[i + 1][j];
-                if (Array.Exists(targetWords, element => element == wordRL))
-                {
-                    data[i][j + 1] = "";
-                    data[i + 1][j] = "";
-                }
+                    if (i + length <= data.Length && j - length + 1 >= 0)
+                    {
+                        // 右上から左下
+                        var wordRU = string.Join("", Enumerable.Range(0, length).Select(k => data[i + k][j - k]));
+                        if (Array.Exists(targetWords, element => element == wordRU))
+                        {
+                            for (int k = 0; k < length; k++) data[i + k][j - k] = ""; // 一致した単語を消去
+                        }
+                    }
 
-                // 左下から右上のチェック
-                var wordLD = data[i + 1][j] + data[i][j + 1];
-                if (Array.Exists(targetWords, element => element == wordLD))
-                {
-                    data[i + 1][j] = "";
-                    data[i][j + 1] = "";
-                }
+                    if (i - length + 1 >= 0 && j + length <= data[i].Length)
+                    {
+                        // 左下から右上
+                        var wordLD = string.Join("", Enumerable.Range(0, length).Select(k => data[i - k][j + k]));
+                        if (Array.Exists(targetWords, element => element == wordLD))
+                        {
+                            for (int k = 0; k < length; k++) data[i - k][j + k] = ""; // 一致した単語を消去
+                        }
+                    }
 
-                // 右下から左上のチェック
-                var wordRD = data[i + 1][j + 1] + data[i][j];
-                if (Array.Exists(targetWords, element => element == wordRD))
-                {
-                    data[i + 1][j + 1] = "";
-                    data[i][j] = "";
+                    if (i - length + 1 >= 0 && j - length + 1 >= 0)
+                    {
+                        // 右下から左上
+                        var wordRD = string.Join("", Enumerable.Range(0, length).Select(k => data[i - k][j - k]));
+                        if (Array.Exists(targetWords, element => element == wordRD))
+                        {
+                            for (int k = 0; k < length; k++) data[i - k][j - k] = ""; // 一致した単語を消去
+                        }
+                    }
                 }
             }
         }
     }
 
 
+
     private static char GetRandomJapaneseChar()
     {
         string[] hiragana =
-        {
-            "あ", "い", "う", "え", "お", "か", "き", "く", "け", "こ", "さ", "し", "す", "せ", "そ",
-            "た", "ち", "つ", "て", "と", "な", "に", "ぬ", "ね", "の", "は", "ひ", "ふ", "へ", "ほ",
-            "ま", "み", "む", "め", "も", "や", "ゆ", "よ", "ら", "り", "る", "れ", "ろ", "わ", "を", "ん",
-            "が", "ぎ", "ぐ", "げ", "ご", "ざ", "じ", "ず", "ぜ", "ぞ", "だ", "ぢ", "づ", "で", "ど",
-            "ば", "び", "ぶ", "べ", "ぼ", "ぱ", "ぴ", "ぷ", "ぺ", "ぽ", "ゃ", "ゅ", "ょ", "っ"
-        };
+        [
+            "あ", "い", "う", "え", "お"
+            // "あ", "い", "う", "え", "お", "か", "き", "く", "け", "こ", "さ", "し", "す", "せ", "そ",
+            // "た", "ち", "つ", "て", "と", "な", "に", "ぬ", "ね", "の", "は", "ひ", "ふ", "へ", "ほ",
+            // "ま", "み", "む", "め", "も", "や", "ゆ", "よ", "ら", "り", "る", "れ", "ろ", "わ", "を", "ん",
+            // "が", "ぎ", "ぐ", "げ", "ご", "ざ", "じ", "ず", "ぜ", "ぞ", "だ", "ぢ", "づ", "で", "ど",
+            // "ば", "び", "ぶ", "べ", "ぼ", "ぱ", "ぴ", "ぷ", "ぺ", "ぽ", "ゃ", "ゅ", "ょ", "っ"
+        ];
 
         var rand = new Random();
         int index = rand.Next(hiragana.Length);
