@@ -1,0 +1,54 @@
+name: Build .app and .exe with .NET 9.0
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  build-mac:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup .NET 9.0
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '9.0' # .NET 9.0 を指定
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build macOS app
+        run: dotnet publish -r osx-x64 -c Release --self-contained
+
+      - name: Upload macOS artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: macOS-app
+          path: bin/Release/net9.0/osx-x64/publish/
+
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup .NET 9.0
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '9.0' # .NET 9.0 を指定
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build Windows exe
+        run: dotnet publish -r win-x64 -c Release --self-contained
+
+      - name: Upload Windows artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: windows-exe
+          path: bin/Release/net9.0/win-x64/publish/
