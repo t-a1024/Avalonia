@@ -1,62 +1,46 @@
-name: Build .app and .exe with Specific Names
+name: Build Avalonia App
 
 on:
   push:
     branches:
       - main
   pull_request:
+    branches:
+      - main
 
 jobs:
-  build-mac:
-    runs-on: macos-latest
+  build:
+    runs-on: windows-latest  # .exeビルドのため、Windowsランナーを使用します
+
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+    - name: Checkout code
+      uses: actions/checkout@v3
 
-      - name: Setup .NET 9.0
-        uses: actions/setup-dotnet@v3
-        with:
-          dotnet-version: '9.0'
+    - name: Set up .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '9.0'  # 使用している.NETバージョンに合わせてください
 
-      - name: Restore dependencies
-        run: dotnet restore
+    - name: Restore dependencies
+      run: dotnet restore Starter.sln
 
-      - name: Build macOS app
-        run: dotnet publish -r osx-x64 -c Release --self-contained
+    - name: Build the project
+      run: dotnet build Starter.sln --configuration Release
 
-      - name: Rename macOS artifact to macOS.app
-        run: |
-          mv bin/Release/net9.0/osx-x64/publish bin/Release/net9.0/osx-x64/macOS.app
+    - name: Publish for Windows (.exe)
+      run: dotnet publish Starter.sln -c Release -r win-x64 --self-contained false --output ./publish/windows
 
-      - name: Upload macOS artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: macOS.app
-          path: bin/Release/net9.0/osx-x64/macOS.app/
+    - name: Publish for macOS (.app)
+      run: dotnet publish Starter.sln -c Release -r osx-x64 --self-contained false --output ./publish/osx
 
-  build-windows:
-    runs-on: windows-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+    - name: Upload Windows build artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: windows-build
+        path: ./publish/windows
 
-      - name: Setup .NET 9.0
-        uses: actions/setup-dotnet@v3
-        with:
-          dotnet-version: '9.0'
-
-      - name: Restore dependencies
-        run: dotnet restore
-
-      - name: Build Windows exe
-        run: dotnet publish -r win-x64 -c Release --self-contained
-
-      - name: Rename Windows artifact to windows.exe
-        run: |
-          Rename-Item -Path bin\Release\net9.0\win-x64\publish\Starter -NewName windows.exe
-
-      - name: Upload Windows artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: windows.exe
-          path: bin/Release/net9.0/win-x64/windows.exe
+    - name: Upload macOS build artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: osx-build
+        path: ./publish/osx
