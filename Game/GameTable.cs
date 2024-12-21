@@ -16,6 +16,7 @@ public class GameTable
     private Border draggingElement;
     private Avalonia.Point originalPosition;
     private (int row, int col)? originalIndex;
+    private bool canMove = false;
     private Canvas canvas;
 
     private static readonly string[] targetWords = ["はなわ", "あえうえ", "おいお", "あう", "いえ"]; // 消したい単語のリスト
@@ -75,9 +76,13 @@ public class GameTable
 
         border.PointerPressed += (s, e) =>
         {
-            draggingElement = border;
-            originalPosition = e.GetPosition((Visual)border.Parent!);
-            originalIndex = (row, col);
+            if (canMove)
+            {
+                draggingElement = border;
+                originalPosition = e.GetPosition((Visual)border.Parent!);
+                originalIndex = (row, col);
+            }
+            
         };
 
         border.PointerMoved += (s, e) =>
@@ -124,6 +129,7 @@ public class GameTable
 
     private async Task HandleWordMatchingAndBoardUpdateAsync()
     {
+        canMove = false;
         bool flag = true;
         // 新しい位置に移動後、特定の単語が並んでいるかチェック
         scoreBoard.ResetCombo();
@@ -136,6 +142,7 @@ public class GameTable
             FillEmptySpacesWithRandomJapaneseChars();
             UpdateTable();
         }
+        canMove = true;
     }
 
 
@@ -154,6 +161,7 @@ public class GameTable
                 Width = CellWidth * data[0].Length,
                 Height = CellHeight * data.Length
             };
+            canMove = true;
         }
 
         for (int i = 0; i < data.Length; i++)
