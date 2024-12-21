@@ -1,0 +1,37 @@
+name: Build Avalonia Application
+
+on:
+  push:
+    branches:
+      - main  # mainブランチにプッシュされたときに実行
+  pull_request:
+    branches:
+      - main  # mainブランチへのプルリクエスト時に実行
+
+jobs:
+  build:
+    runs-on: windows-latest  # Windows環境でビルド
+
+    steps:
+    - name: Check out repository
+      uses: actions/checkout@v3
+
+    - name: Set up .NET SDK
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '6.0.x'  # 使用する.NET SDKのバージョン
+
+    - name: Restore dependencies
+      run: dotnet restore Starter.sln  # 依存関係の復元
+
+    - name: Build the application
+      run: dotnet build Starter.sln --configuration Release  # Releaseビルド
+
+    - name: Publish the application
+      run: dotnet publish Starter.sln --configuration Release --output ./publish --self-contained --runtime win-x64  # exeファイルの生成
+
+    - name: Upload .exe as artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: AvaloniaApp
+        path: ./publish/Starter.exe  # 出力された .exe をアップロード
