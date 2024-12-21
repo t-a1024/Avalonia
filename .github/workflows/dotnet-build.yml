@@ -1,4 +1,4 @@
-name: Build .app and .exe with .NET 9.0
+name: Build .app and .exe with Specific Names
 
 on:
   push:
@@ -16,7 +16,7 @@ jobs:
       - name: Setup .NET 9.0
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: '9.0' # .NET 9.0 を指定
+          dotnet-version: '9.0'
 
       - name: Restore dependencies
         run: dotnet restore
@@ -24,11 +24,15 @@ jobs:
       - name: Build macOS app
         run: dotnet publish -r osx-x64 -c Release --self-contained
 
+      - name: Rename macOS artifact to macOS.app
+        run: |
+          mv bin/Release/net9.0/osx-x64/publish bin/Release/net9.0/osx-x64/macOS.app
+
       - name: Upload macOS artifact
         uses: actions/upload-artifact@v3
         with:
-          name: macOS-app
-          path: bin/Release/net9.0/osx-x64/publish/
+          name: macOS.app
+          path: bin/Release/net9.0/osx-x64/macOS.app/
 
   build-windows:
     runs-on: windows-latest
@@ -39,7 +43,7 @@ jobs:
       - name: Setup .NET 9.0
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: '9.0' # .NET 9.0 を指定
+          dotnet-version: '9.0'
 
       - name: Restore dependencies
         run: dotnet restore
@@ -47,8 +51,12 @@ jobs:
       - name: Build Windows exe
         run: dotnet publish -r win-x64 -c Release --self-contained
 
+      - name: Rename Windows artifact to windows.exe
+        run: |
+          mv bin/Release/net9.0/win-x64/publish/* bin/Release/net9.0/win-x64/windows.exe
+
       - name: Upload Windows artifact
         uses: actions/upload-artifact@v3
         with:
-          name: windows-exe
-          path: bin/Release/net9.0/win-x64/publish/
+          name: windows.exe
+          path: bin/Release/net9.0/win-x64/windows.exe
