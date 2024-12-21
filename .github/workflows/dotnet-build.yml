@@ -3,10 +3,10 @@ name: Build Avalonia Application
 on:
   push:
     branches:
-      - main  # mainブランチにプッシュされたときに実行
+      - downGrade  # downGradeブランチにプッシュされたときに実行
   pull_request:
     branches:
-      - main  # mainブランチへのプルリクエスト時に実行
+      - downGrade  # downGradeブランチへのプルリクエスト時に実行
 
 jobs:
   build:
