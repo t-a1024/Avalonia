@@ -10,7 +10,12 @@ public class State
     public readonly int GAME = 101;
     public readonly int RESULT = 102;
     public State(){
-        window = new Window();
+        window = new Window
+        {
+            Width = 1200,
+            Height = 800,
+            Title = "X-mas"
+        };
         window.Show();
         homeContent = new HomeContent(this,window);
         gameContent = new GameContent(this,window);
