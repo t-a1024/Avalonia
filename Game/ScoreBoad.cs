@@ -97,6 +97,7 @@ public class ScoreBoard
 
     public void SetCount(int count){
         this.count = count;
+        UpdateCanvas();
     }
 
     public void Reset()

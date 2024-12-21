@@ -27,11 +27,11 @@ public class GameTable
 
 
     // 見た目のパラメータ
-    public double CellWidth { get; set; } = 20;
-    public double CellHeight { get; set; } = 20;
+    public double CellWidth { get; set; } = 25;
+    public double CellHeight { get; set; } = 25;
     public double BorderThickness { get; set; } = 1;
     public IBrush BorderBrush { get; set; } = Brushes.Black;
-    public IBrush BackgroundBrush { get; set; } = Brushes.LightGray;
+    public IBrush BackgroundBrush { get; set; } = new SolidColorBrush(Colors.LightGray, 0.5);
     public double FontSize { get; set; } = 12;
 
     public GameTable(BackDrop backDrop, ScoreBoard scoreBoard, Action FinishGame)
@@ -150,7 +150,9 @@ public class GameTable
         if (Count > 0)
         {
             canMove = true;
+            scoreBoard.SetCount(Count);
         }else {
+            scoreBoard.SetCount(Count);
             await Task.Delay(1000);
             FinishGame();
         }
@@ -163,6 +165,7 @@ public class GameTable
         if (canvas != null)
         {
             canvas.Children.Clear();
+            scoreBoard.SetCount(Count);
         }
         else
         {
@@ -395,11 +398,12 @@ public class GameTable
     {
         string[] hiragana =
         [
-            "あ", "い", "う", "え", "お", "か", "き", "く", "け", "こ", "さ", "し", "す", "せ", "そ",
-            "た", "ち", "つ", "て", "と", "な", "に", "ぬ", "ね", "の", "は", "ひ", "ふ", "へ", "ほ",
-            "ま", "み", "む", "め", "も", "や", "ゆ", "よ", "ら", "り", "る", "れ", "ろ", "わ", "を", "ん",
-            "が", "ぎ", "ぐ", "げ", "ご", "ざ", "じ", "ず", "ぜ", "ぞ", "だ", "ぢ", "づ", "で", "ど",
-            "ば", "び", "ぶ", "べ", "ぼ", "ぱ", "ぴ", "ぷ", "ぺ", "ぽ", "ゃ", "ゅ", "ょ", "っ", "ー"
+            // "あ", "い", "う", "え", "お", "か", "き", "く", "け", "こ", "さ", "し", "す", "せ", "そ",
+            // "た", "ち", "つ", "て", "と", "な", "に", "ぬ", "ね", "の", "は", "ひ", "ふ", "へ", "ほ",
+            // "ま", "み", "む", "め", "も", "や", "ゆ", "よ", "ら", "り", "る", "れ", "ろ", "わ", "を", "ん",
+            // "が", "ぎ", "ぐ", "げ", "ご", "ざ", "じ", "ず", "ぜ", "ぞ", "だ", "ぢ", "づ", "で", "ど",
+            // "ば", "び", "ぶ", "べ", "ぼ", "ぱ", "ぴ", "ぷ", "ぺ", "ぽ", "ゃ", "ゅ", "ょ", "っ", "ー"
+            "あ", "め", "ほ", "し"
         ];
 
         var rand = new Random();

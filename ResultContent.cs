@@ -38,6 +38,10 @@ class ResultContent : ContentBase
         {
             Content = "ホームへ",
             FontSize = 24,
+            Width = 200,
+            Height = 100,
+            HorizontalContentAlignment = HorizontalAlignment.Center, // 文字の中央揃え
+            VerticalContentAlignment = VerticalAlignment.Center // 文字の中央揃え
         };
 
         returnButton.Click += (sender, e) =>
@@ -65,7 +69,7 @@ class ResultContent : ContentBase
 
         // ボタンの位置を設定
         returnButton.Margin = new Thickness(0, 0, 0, 20);  // 下に余白を作る
-        Canvas.SetLeft(returnButton, (window.Width - returnButton.Bounds.Width) / 2);
+        Canvas.SetLeft(returnButton, (1200 - 200) / 2);
         Canvas.SetTop(returnButton, window.Height * 2 / 3);
 
         //背景を設定
