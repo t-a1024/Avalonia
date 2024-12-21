@@ -35,4 +35,10 @@ public class BackDrop : Canvas
         rectangle.Width = e.NewSize.Width;
         rectangle.Height = e.NewSize.Height;
     }
+    public void Reset(){
+
+    }
+    public void AddBackItem(string word){
+
+    }
 }
