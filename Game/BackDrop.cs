@@ -77,8 +77,8 @@ public class BackDrop : Canvas
 
         // ランダムな位置に配置
         var random = new Random();
-        SetLeft(image, random.Next(0, 800));
-        SetTop(image, random.Next(0,400));
+        SetLeft(image, random.Next(0, 1200));
+        SetTop(image, random.Next(0,800));
 
         // Canvasに追加
         Children.Add(image);

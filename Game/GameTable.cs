@@ -18,9 +18,10 @@ public class GameTable
     private (int row, int col)? originalIndex;
     private Canvas canvas;
 
-    private static readonly string[] targetWords = ["ぷれぜんと", "あえうえ", "おいお", "あう", "いえ"]; // 消したい単語のリスト
+    private static readonly string[] targetWords = ["はなわ", "あえうえ", "おいお", "あう", "いえ"]; // 消したい単語のリスト
     private readonly List<string> removedWords = [];//　消した単語のリスト
-    private BackDrop backDrop;
+    private readonly BackDrop backDrop;
+    private ScoreBoard scoreBoard;
 
 
     // 見た目のパラメータ
@@ -31,9 +32,10 @@ public class GameTable
     public IBrush BackgroundBrush { get; set; } = Brushes.LightGray;
     public double FontSize { get; set; } = 12;
 
-    public GameTable(BackDrop backDrop)
+    public GameTable(BackDrop backDrop, ScoreBoard scoreBoard)
     {
         this.backDrop = backDrop;
+        this.scoreBoard = scoreBoard;
         data = new string[20][];
         for (int i = 0; i < data.Length; i++)
         {
@@ -108,18 +110,9 @@ public class GameTable
                     Canvas.SetLeft(draggingElement, newCol * CellWidth);
                     Canvas.SetTop(draggingElement, newRow * CellHeight);
 
+                    UpdateTable();
 
-                    bool flag = true;
-                    // 新しい位置に移動後、特定の単語が並んでいるかチェック
-                    while (flag)
-                    {
-                        flag = await CheckForMatchingWordsAsync();
-                        ShiftDownInRows();
-                        await Dispatcher.UIThread.InvokeAsync(UpdateTable);
-                        await Task.Delay(1000);
-                        FillEmptySpacesWithRandomJapaneseChars();
-                        UpdateTable();
-                    }
+                    await HandleWordMatchingAndBoardUpdateAsync();
                 }
             }
 
@@ -128,6 +121,24 @@ public class GameTable
 
         return border;
     }
+
+    private async Task HandleWordMatchingAndBoardUpdateAsync()
+    {
+        bool flag = true;
+        // 新しい位置に移動後、特定の単語が並んでいるかチェック
+        scoreBoard.ResetCombo();
+        while (flag)
+        {
+            flag = await CheckForMatchingWordsAsync();
+            ShiftDownInRows();
+            await Dispatcher.UIThread.InvokeAsync(UpdateTable);
+            await Task.Delay(1000);
+            FillEmptySpacesWithRandomJapaneseChars();
+            UpdateTable();
+        }
+    }
+
+
 
     private void UpdateTable()
     {
@@ -343,6 +354,8 @@ public class GameTable
         await Dispatcher.UIThread.InvokeAsync(UpdateTable);
         Stopwatch stopwatch = Stopwatch.StartNew();
         backDrop.AddBackItem(word);
+        scoreBoard.AddCombo();
+        scoreBoard.AddScore();
         await Task.Delay(100);
     }
 
@@ -363,7 +376,7 @@ public class GameTable
     {
         string[] hiragana =
         [
-            "ぷ", "れ", "ぜ", "ん", "と"
+            "は", "な", "わ",
             // "あ", "い", "う", "え", "お", "か", "き", "く", "け", "こ", "さ", "し", "す", "せ", "そ",
             // "た", "ち", "つ", "て", "と", "な", "に", "ぬ", "ね", "の", "は", "ひ", "ふ", "へ", "ほ",
             // "ま", "み", "む", "め", "も", "や", "ゆ", "よ", "ら", "り", "る", "れ", "ろ", "わ", "を", "ん",
