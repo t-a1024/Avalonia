@@ -13,4 +13,8 @@
     <PackageReference Include="SkiaSharp.NativeAssets.macOS" Version="2.88.8" />  <!-- macOS 用 -->
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Include="Assets\*" />
+  </ItemGroup>
+
 </Project>
