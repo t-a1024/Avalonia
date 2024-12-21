@@ -8,6 +8,8 @@ public class GameCanvas : Canvas
     public GameCanvas(State state,BackDrop backDrop,ScoreBoard scoreBoard)
     {
         this.state = state;
+        backDrop.Reset();
+        scoreBoard.Reset();
         // 親Canvasの設定
         HorizontalAlignment = HorizontalAlignment.Stretch;
         VerticalAlignment = VerticalAlignment.Stretch;
@@ -37,6 +39,7 @@ public class GameCanvas : Canvas
     }
     public void FinishGame(){
         Console.WriteLine("Finish");
+        Children.Clear();
         state.SetState(state.RESULT);
     }
 }

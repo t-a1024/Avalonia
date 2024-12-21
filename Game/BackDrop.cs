@@ -42,6 +42,10 @@ public class BackDrop : Canvas
     public BackDrop()
     {
 
+        Update();
+    }
+
+    public void Update(){
         // 長方形で背景を塗りつぶす
         var rectangle = new Rectangle
         {
@@ -53,7 +57,6 @@ public class BackDrop : Canvas
         // CanvasにRectangleを追加
         Children.Add(rectangle);
     }
-
     public void AddBackItem(string word)
     {
         // 名前で一致するアイテムを検索
@@ -82,6 +85,10 @@ public class BackDrop : Canvas
 
         // Canvasに追加
         Children.Add(image);
+    }
+    public void Reset(){
+        Children.Clear();
+        Update();
     }
 }
 

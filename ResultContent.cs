@@ -5,10 +5,11 @@ using Avalonia;
 
 class ResultContent : ContentBase
 {
-    private Canvas backDrop;
+    private BackDrop backDrop;
     private ScoreBoard scoreBoard;
+    private Canvas canvas;
 
-    public ResultContent(State state, Window window, Canvas backDrop, ScoreBoard scoreBoard) : base(state, window)
+    public ResultContent(State state, Window window, BackDrop backDrop, ScoreBoard scoreBoard) : base(state, window)
     {
         this.backDrop = backDrop;
         this.scoreBoard = scoreBoard;
@@ -42,18 +43,12 @@ class ResultContent : ContentBase
         returnButton.Click += (sender, e) =>
         {
             // ボタンがクリックされたときに状態を変更
-            state.SetState(state.HOME);
+            ReturnHome();
         };
 
-        var newBackDrop = new Canvas
-        {
-            Background = backDrop.Background, // 必要に応じてプロパティをコピー
-            Width = backDrop.Width,
-            Height = backDrop.Height,
-        };
 
         // Canvasの作成
-        var canvas = new Canvas
+        canvas = new Canvas
         {
             HorizontalAlignment = HorizontalAlignment.Stretch,
             VerticalAlignment = VerticalAlignment.Stretch,
@@ -73,11 +68,20 @@ class ResultContent : ContentBase
         Canvas.SetLeft(returnButton, (window.Width - returnButton.Bounds.Width) / 2);
         Canvas.SetTop(returnButton, window.Height * 2 / 3);
 
+        //背景を設定
+        Canvas.SetLeft(backDrop,0);
+        Canvas.SetTop(backDrop,0);
+
         // 要素をCanvasに追加
+        canvas.Children.Add(backDrop);
         canvas.Children.Add(label);
         canvas.Children.Add(returnButton);
 
         // ウィンドウにコンテンツを設定
         window.Content = canvas;
+    }
+    private void ReturnHome(){
+        canvas.Children.Clear();
+        state.SetState(state.HOME);
     }
 }
