@@ -22,16 +22,16 @@ jobs:
         dotnet-version: '9.0.x'  # 使用する.NET SDKのバージョン
 
     - name: Restore dependencies
-      run: dotnet restore Starter.sln  # 依存関係の復元
+      run: dotnet restore  # 依存関係の復元
 
     - name: Build the application
-      run: dotnet build Starter.sln --configuration Release  # Releaseビルド（--output は削除）
+      run: dotnet build Starter.sln --configuration Release --property:OutputPath=./build_output  # 出力先を指定
 
     - name: Publish the application
-      run: dotnet publish Starter.sln --configuration Release --output ./publish --self-contained --runtime win-x64  # exeファイルの生成
+      run: dotnet publish Starter.sln --configuration Release --property:PublishDir=./publish --self-contained --runtime win-x64  # exeファイルの生成
 
     - name: Upload .exe as artifact
       uses: actions/upload-artifact@v4
       with:
         name: AvaloniaApp
-        path: ./publish/Starter.exe  # 出力された .exe をアップロード
+        path: ./publish/**/*  # 出力された .exe をアップロード
