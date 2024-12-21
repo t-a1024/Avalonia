@@ -34,13 +34,13 @@ jobs:
       run: dotnet publish Starter.sln -c Release -r osx-x64 --self-contained false --output ./publish/osx
 
     - name: Upload Windows build artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: windows-build
         path: ./publish/windows
 
     - name: Upload macOS build artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: osx-build
         path: ./publish/osx
