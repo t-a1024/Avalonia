@@ -31,7 +31,7 @@ jobs:
       run: dotnet publish Starter.sln --configuration Release --output ./publish --self-contained --runtime win-x64  # exeファイルの生成
 
     - name: Upload .exe as artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: AvaloniaApp
         path: ./publish/Starter.exe  # 出力された .exe をアップロード
