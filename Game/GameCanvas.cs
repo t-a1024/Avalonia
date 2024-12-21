@@ -9,9 +9,11 @@ public class GameCanvas : Canvas
         HorizontalAlignment = HorizontalAlignment.Stretch;
         VerticalAlignment = VerticalAlignment.Stretch;
 
-        // Tableのインスタンスを作成し、TableCanvas()を呼び出してCanvasを取得
-        var tableCanvas = new GameTable().TableCanvas();
         var backDrop = new BackDrop();
+
+        // Tableのインスタンスを作成し、TableCanvas()を呼び出してCanvasを取得
+        GameTable gameTable = new GameTable(backDrop);
+        var tableCanvas = gameTable.TableCanvas();
 
         // GameCanvasに追加
         Children.Add(backDrop);  // 先に追加して背景として配置
