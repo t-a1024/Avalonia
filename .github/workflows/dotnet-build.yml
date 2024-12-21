@@ -53,7 +53,7 @@ jobs:
 
       - name: Rename Windows artifact to windows.exe
         run: |
-          mv bin/Release/net9.0/win-x64/publish/* bin/Release/net9.0/win-x64/windows.exe
+          ren bin\Release\net9.0\win-x64\publish\* bin\Release\net9.0\win-x64\windows.exe
 
       - name: Upload Windows artifact
         uses: actions/upload-artifact@v3

@@ -11,8 +11,6 @@ public class State
     public readonly int GAME = 101;
     public readonly int RESULT = 102;
 
-    private BackDrop backDrop;
-    private ScoreBoard scoreBoard;
     public State(){
         window = new Window
         {
