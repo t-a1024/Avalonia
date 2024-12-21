@@ -1,21 +1,21 @@
+using System;
 using Avalonia.Controls;
 using Avalonia.Layout;
 
 public class GameCanvas : Canvas
 {
-    public GameCanvas()
+    private State state;
+    public GameCanvas(State state,BackDrop backDrop,ScoreBoard scoreBoard)
     {
+        this.state = state;
         // 親Canvasの設定
         HorizontalAlignment = HorizontalAlignment.Stretch;
         VerticalAlignment = VerticalAlignment.Stretch;
 
-        BackDrop backDrop = new();
-        ScoreBoard scoreBoard = new();
         Canvas scoreCanvas = scoreBoard.ScoreCanvas();
         
-
         // Tableのインスタンスを作成し、TableCanvas()を呼び出してCanvasを取得
-        GameTable gameTable = new GameTable(backDrop,scoreBoard);
+        GameTable gameTable = new GameTable(backDrop,scoreBoard,FinishGame);
         var tableCanvas = gameTable.TableCanvas();
 
         // GameCanvasに追加
@@ -34,5 +34,9 @@ public class GameCanvas : Canvas
         // ScoreBoradの位置を設定
         SetRight(scoreCanvas, 50);  // GameCanvas内の位置
         SetTop(scoreCanvas, 100);   // GameCanvas内の位置
+    }
+    public void FinishGame(){
+        Console.WriteLine("Finish");
+        state.SetState(state.RESULT);
     }
 }

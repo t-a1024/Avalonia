@@ -17,8 +17,9 @@ public class GameTable
     private Avalonia.Point originalPosition;
     private (int row, int col)? originalIndex;
     private bool canMove = false;
+    private readonly Action FinishGame;
     private Canvas canvas;
-
+    private int Count = 3;
     private static readonly string[] targetWords = ["はなわ", "あえうえ", "おいお", "あう", "いえ"]; // 消したい単語のリスト
     private readonly List<string> removedWords = [];//　消した単語のリスト
     private readonly BackDrop backDrop;
@@ -33,10 +34,11 @@ public class GameTable
     public IBrush BackgroundBrush { get; set; } = Brushes.LightGray;
     public double FontSize { get; set; } = 12;
 
-    public GameTable(BackDrop backDrop, ScoreBoard scoreBoard)
+    public GameTable(BackDrop backDrop, ScoreBoard scoreBoard, Action FinishGame)
     {
         this.backDrop = backDrop;
         this.scoreBoard = scoreBoard;
+        this.FinishGame = FinishGame;
         data = new string[20][];
         for (int i = 0; i < data.Length; i++)
         {
@@ -133,6 +135,7 @@ public class GameTable
     {
         canMove = false;
         bool flag = true;
+        Count--;
         // 新しい位置に移動後、特定の単語が並んでいるかチェック
         scoreBoard.ResetCombo();
         while (flag)
@@ -144,7 +147,13 @@ public class GameTable
             FillEmptySpacesWithRandomJapaneseChars();
             UpdateTable();
         }
-        canMove = true;
+        if (Count > 0)
+        {
+            canMove = true;
+        }else {
+            await Task.Delay(1000);
+            FinishGame();
+        }
     }
 
 
@@ -386,12 +395,12 @@ public class GameTable
     {
         string[] hiragana =
         [
-            "は", "な", "わ",
-            // "あ", "い", "う", "え", "お", "か", "き", "く", "け", "こ", "さ", "し", "す", "せ", "そ",
-            // "た", "ち", "つ", "て", "と", "な", "に", "ぬ", "ね", "の", "は", "ひ", "ふ", "へ", "ほ",
-            // "ま", "み", "む", "め", "も", "や", "ゆ", "よ", "ら", "り", "る", "れ", "ろ", "わ", "を", "ん",
-            // "が", "ぎ", "ぐ", "げ", "ご", "ざ", "じ", "ず", "ぜ", "ぞ", "だ", "ぢ", "づ", "で", "ど",
-            // "ば", "び", "ぶ", "べ", "ぼ", "ぱ", "ぴ", "ぷ", "ぺ", "ぽ", "ゃ", "ゅ", "ょ", "っ"
+            "は", "な", "わ", "は", "な", "わ", "は", "な", "わ",
+            "あ", "い", "う", "え", "お", "か", "き", "く", "け", "こ", "さ", "し", "す", "せ", "そ",
+            "た", "ち", "つ", "て", "と", "な", "に", "ぬ", "ね", "の", "は", "ひ", "ふ", "へ", "ほ",
+            "ま", "み", "む", "め", "も", "や", "ゆ", "よ", "ら", "り", "る", "れ", "ろ", "わ", "を", "ん",
+            "が", "ぎ", "ぐ", "げ", "ご", "ざ", "じ", "ず", "ぜ", "ぞ", "だ", "ぢ", "づ", "で", "ど",
+            "ば", "び", "ぶ", "べ", "ぼ", "ぱ", "ぴ", "ぷ", "ぺ", "ぽ", "ゃ", "ゅ", "ょ", "っ"
         ];
 
         var rand = new Random();

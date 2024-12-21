@@ -95,10 +95,17 @@ public class ScoreBoard
         UpdateCanvas();
     }
 
+    public void SetCount(int count){
+        this.count = count;
+    }
+
     public void Reset()
     {
         score = 0;
         combo = 0;
         UpdateCanvas();
+    }
+    public int GetScore(){
+        return score;
     }
 }

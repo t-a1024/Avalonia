@@ -6,7 +6,13 @@ using Avalonia.Media;
 
 class GameContent : ContentBase
 {
-    public GameContent(State state, Window window) : base(state, window){  }
+    private BackDrop backDrop;
+    private ScoreBoard scoreBoard;
+    public GameContent(State state, Window window, BackDrop backDrop, ScoreBoard scoreBoard) : base(state, window)
+    { 
+        this.backDrop = backDrop;
+        this.scoreBoard = scoreBoard;
+    }
 
     public override void Update()
     {
@@ -16,6 +22,6 @@ class GameContent : ContentBase
     public override void UpdateContent()
     {
         // Canvasをウィンドウのコンテンツに設定
-        window.Content = new GameCanvas();
+        window.Content = new GameCanvas(state,backDrop,scoreBoard);
     }
 }
