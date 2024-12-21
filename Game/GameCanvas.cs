@@ -32,7 +32,7 @@ public class GameCanvas : Canvas
         SetTop(tableCanvas, 100);   // GameCanvas内の位置
 
         // ScoreBoradの位置を設定
-        SetRight(scoreCanvas, 0);  // GameCanvas内の位置
-        SetTop(scoreCanvas, 0);   // GameCanvas内の位置
+        SetRight(scoreCanvas, 50);  // GameCanvas内の位置
+        SetTop(scoreCanvas, 100);   // GameCanvas内の位置
     }
 }

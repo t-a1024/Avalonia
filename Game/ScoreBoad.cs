@@ -4,11 +4,12 @@ using Avalonia.Media;
 
 public class ScoreBoard
 {
+    private int count = 0;
     private int score = 0;
     private int combo = 0;
     private Canvas canvas;
     private readonly int CanvasWidth = 600;
-    private readonly int CanvasHeight = 400;
+    private readonly int CanvasHeight = 600;
 
     private IBrush BackgroundBrush { get; set; } = new SolidColorBrush(Colors.CornflowerBlue, 0.5);
     private double FontSize { get; set; } = 24;
@@ -44,6 +45,17 @@ public class ScoreBoard
         Canvas.SetTop(scoreText, 20);
         canvas.Children.Add(scoreText);
 
+        // スコア表示
+        var countText = new TextBlock
+        {
+            Text = $"残り: {count}",
+            FontSize = FontSize,
+            Foreground = Brushes.White
+        };
+        Canvas.SetLeft(countText, 20);
+        Canvas.SetTop(countText, 60);
+        canvas.Children.Add(countText);
+
         // コンボ表示
         var comboText = new TextBlock
         {
@@ -52,7 +64,7 @@ public class ScoreBoard
             Foreground = Brushes.White
         };
         Canvas.SetLeft(comboText, 20);
-        Canvas.SetTop(comboText, 60);
+        Canvas.SetTop(comboText, 100);
         canvas.Children.Add(comboText);
     }
 
