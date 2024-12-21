@@ -20,7 +20,7 @@ public class GameTable
     private readonly Action FinishGame;
     private Canvas canvas;
     private int Count = 3;
-    private static readonly string[] targetWords = ["はなわ", "あえうえ", "おいお", "あう", "いえ"]; // 消したい単語のリスト
+    private static readonly string[] targetWords = ["さんた", "はなわ", "ゆきだるま", "ぷれぜんと", "つりー", "くつした", "すず", "ほし", "あめ", "ろうそく", "ひいらぎ", "まつぼっくり", "となかい", "ほし", "すたー"]; // 消したい単語のリスト
     private readonly List<string> removedWords = [];//　消した単語のリスト
     private readonly BackDrop backDrop;
     private ScoreBoard scoreBoard;
@@ -395,12 +395,11 @@ public class GameTable
     {
         string[] hiragana =
         [
-            "は", "な", "わ", "は", "な", "わ", "は", "な", "わ",
             "あ", "い", "う", "え", "お", "か", "き", "く", "け", "こ", "さ", "し", "す", "せ", "そ",
             "た", "ち", "つ", "て", "と", "な", "に", "ぬ", "ね", "の", "は", "ひ", "ふ", "へ", "ほ",
             "ま", "み", "む", "め", "も", "や", "ゆ", "よ", "ら", "り", "る", "れ", "ろ", "わ", "を", "ん",
             "が", "ぎ", "ぐ", "げ", "ご", "ざ", "じ", "ず", "ぜ", "ぞ", "だ", "ぢ", "づ", "で", "ど",
-            "ば", "び", "ぶ", "べ", "ぼ", "ぱ", "ぴ", "ぷ", "ぺ", "ぽ", "ゃ", "ゅ", "ょ", "っ"
+            "ば", "び", "ぶ", "べ", "ぼ", "ぱ", "ぴ", "ぷ", "ぺ", "ぽ", "ゃ", "ゅ", "ょ", "っ", "ー"
         ];
 
         var rand = new Random();

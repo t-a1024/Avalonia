@@ -7,35 +7,27 @@ using System.Collections.Generic;
 
 public class BackDrop : Canvas
 {
-    private List<ItemImage> itemImages =
+    private readonly List<ItemImage> itemImages =
     [
-        new ItemImage("さんた", "christmas_ornament01_santa.png"),
+        new("さんた", "christmas_ornament01_santa.png"),
         new ItemImage("はなわ", "christmas_ornament02_wreath.png"),
         new ItemImage("ゆきだるま", "christmas_ornament03_snowman.png"),
+        new ItemImage("ゆきだるま", "christmas_ornament04_snowman.png"),
         new ItemImage("ぷれぜんと", "christmas_ornament05_present.png"),
+        new ItemImage("ぷれぜんと", "christmas_ornament06_present.png"),
         new ItemImage("つりー", "christmas_ornament07_tree.png"),
-        // 他のアイテムもここに追加
+        new ItemImage("くつした", "christmas_ornament08_sock.png"),
+        new ItemImage("すず", "christmas_ornament09_bells.png"),
+        new ItemImage("すず", "christmas_ornament10_bell.png"),
+        new ItemImage("ほし", "christmas_ornament11_star.png"),
+        new ItemImage("あめ", "christmas_ornament12_candy.png"),
+        new ItemImage("ろうそく", "christmas_ornament13_candle.png"),
+        new ItemImage("ひいらぎ", "christmas_ornament14_hiiragi.png"),
+        new ItemImage("まつぼっくり", "christmas_ornament15_matsubokkuri.png"),
+        new ItemImage("となかい", "christmas_ornament16_tonakai.png"),
+        new ItemImage("ほし", "christmas_ornament17_topstar.png"),
+        new ItemImage("すたー", "christmas_ornament17_topstar.png"),
     ];
-//     private itemImages = [
-//     {"name": "さんた", "fileName": "christmas_ornament01_santa.png"},
-//     { "name": "はなわ", "fileName": "christmas_ornament02_wreath.png"},
-//     {"name": "ゆきだるま", "fileName": "christmas_ornament03_snowman.png"},
-//     {"name": "ゆきだるま", "fileName": "christmas_ornament04_snowman.png"},
-//     {"name": "ぷれぜんと", "fileName": "christmas_ornament05_present.png"},
-//     {"name": "ぷれぜんと", "fileName": "christmas_ornament06_present.png"},
-//     {"name": "つりー", "fileName": "christmas_ornament07_tree.png"},
-//     {"name": "くつした", "fileName": "christmas_ornament08_sock.png"},
-//     {"name": "すず", "fileName": "christmas_ornament09_bells.png"},
-//     {"name": "すず", "fileName": "christmas_ornament10_bell.png"},
-//     {"name": "ほし", "fileName": "christmas_ornament11_star.png"},
-//     {"name": "あめ", "fileName": "christmas_ornament12_candy.png"},
-//     {"name": "ろうそく", "fileName": "christmas_ornament13_candle.png"},
-//     {"name": "ひいらぎ", "fileName": "christmas_ornament14_hiiragi.png"},
-//     {"name": "まつぼっくり", "fileName": "christmas_ornament15_matsubokkuri.png"},
-//     {"name": "となかい", "fileName": "christmas_ornament16_tonakai.png"},
-//     {"name": "ほし", "fileName": "christmas_ornament17_topstar.png"},
-//     {"name": "すたー", "fileName": "christmas_ornament17_topstar.png"},
-//   ];
 
    private String Imagedirectory = "Assets";
   
