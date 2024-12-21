@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>  <!-- net9.0 から net7.0 に変更 -->
+    <TargetFramework>net9.0</TargetFramework>  <!-- net7.0 から net8.0 に変更 -->
     <OutputType>Exe</OutputType>
   </PropertyGroup>
 
@@ -9,8 +9,8 @@
     <PackageReference Include="Avalonia" Version="11.1.0" />
     <PackageReference Include="Avalonia.Desktop" Version="11.1.0" />
     <PackageReference Include="Avalonia.Themes.Fluent" Version="11.1.0" />
-    <PackageReference Include="Avalonia.Skia" Version="11.1.0" />  <!-- SkiaSharp 用 -->
-    <PackageReference Include="SkiaSharp.NativeAssets.Windows" Version="2.88.0" />  <!-- Windows 用 -->
+    <PackageReference Include="Avalonia.Skia" Version="11.1.0" />
+    <PackageReference Include="SkiaSharp.NativeAssets.macOS" Version="2.88.8" />  <!-- macOS 用 -->
   </ItemGroup>
 
 </Project>
