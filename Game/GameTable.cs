@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
@@ -10,7 +9,7 @@ using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Threading;
 
-public class GameTable
+class GameTable
 {
     private readonly string[][] data;
     private Border draggingElement;
@@ -23,7 +22,7 @@ public class GameTable
     private static readonly string[] targetWords = ["さんた", "はなわ", "ゆきだるま", "ぷれぜんと", "つりー", "くつした", "すず", "ほし", "あめ", "ろうそく", "ひいらぎ", "まつぼっくり", "となかい", "ほし", "すたー"]; // 消したい単語のリスト
     private readonly List<string> removedWords = [];//　消した単語のリスト
     private readonly BackDrop backDrop;
-    private ScoreBoard scoreBoard;
+    private readonly ScoreBoard scoreBoard;
 
 
     // 見た目のパラメータ

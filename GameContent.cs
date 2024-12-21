@@ -1,18 +1,9 @@
-using System;
-using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Layout;
-using Avalonia.Media;
 
-class GameContent : ContentBase
+class GameContent(State state, Window window, BackDrop backDrop, ScoreBoard scoreBoard) : ContentBase(state, window)
 {
-    private BackDrop backDrop;
-    private ScoreBoard scoreBoard;
-    public GameContent(State state, Window window, BackDrop backDrop, ScoreBoard scoreBoard) : base(state, window)
-    { 
-        this.backDrop = backDrop;
-        this.scoreBoard = scoreBoard;
-    }
+    private readonly BackDrop backDrop = backDrop;
+    private readonly ScoreBoard scoreBoard = scoreBoard;
 
     public override void Update()
     {

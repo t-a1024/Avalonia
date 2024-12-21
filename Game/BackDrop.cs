@@ -1,11 +1,10 @@
 using Avalonia.Controls;
 using Avalonia.Media;
-using Avalonia;
 using Avalonia.Controls.Shapes;
 using System;
 using System.Collections.Generic;
 
-public class BackDrop : Canvas
+class BackDrop : Canvas
 {
     private readonly List<ItemImage> itemImages =
     [
@@ -29,7 +28,7 @@ public class BackDrop : Canvas
         new ItemImage("すたー", "christmas_ornament17_topstar.png"),
     ];
 
-   private String Imagedirectory = "Assets";
+   private readonly string Imagedirectory = "Assets";
   
     public BackDrop()
     {
@@ -85,14 +84,8 @@ public class BackDrop : Canvas
 }
 
 
-class ItemImage
+class ItemImage(string name, string fileName)
 {
-    public string Name { get; }
-    public string FileName { get; }
-
-    public ItemImage(string name, string fileName)
-    {
-        Name = name;
-        FileName = fileName;
-    }
+    public string Name { get; } = name;
+    public string FileName { get; } = fileName;
 }

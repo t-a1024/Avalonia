@@ -1,15 +1,9 @@
 using Avalonia.Controls;
 
-public abstract class ContentBase
+abstract class ContentBase(State state, Window window)
 {
-    protected State state;
-    protected Window window;
-
-    protected ContentBase(State state, Window window)
-    {
-        this.state = state;
-        this.window = window;
-    }
+    protected State state = state;
+    protected Window window = window;
 
     public abstract void UpdateContent();
     public abstract void Update();

@@ -2,9 +2,9 @@ using System;
 using Avalonia.Controls;
 using Avalonia.Layout;
 
-public class GameCanvas : Canvas
+class GameCanvas : Canvas
 {
-    private State state;
+    private readonly State state;
     public GameCanvas(State state,BackDrop backDrop,ScoreBoard scoreBoard)
     {
         this.state = state;

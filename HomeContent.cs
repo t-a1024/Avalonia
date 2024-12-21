@@ -3,10 +3,8 @@ using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 
-class HomeContent : ContentBase
+class HomeContent(State state, Window window) : ContentBase(state, window)
 {
-    public HomeContent(State state, Window window) : base(state, window) { }
-
     public override void Update()
     {
         UpdateContent();
@@ -51,13 +49,12 @@ class HomeContent : ContentBase
             Source = new Bitmap("Assets/background.png"), // 画像ファイルのパスを指定
             AlignmentX = AlignmentX.Center, // 水平方向に中央揃え
             AlignmentY = AlignmentY.Center, // 垂直方向に中央揃え
-        };
-
-        // 背景画像のスケーリング
-        imageBrush.Transform = new ScaleTransform
-        {
-            ScaleX = 1, // 横方向を80%に縮小
-            ScaleY = 1, // 縦方向を80%に縮小
+                                            // 背景画像のスケーリング
+            Transform = new ScaleTransform
+            {
+                ScaleX = 1, // 横方向を80%に縮小
+                ScaleY = 1, // 縦方向を80%に縮小
+            }
         };
 
         grid.Background = imageBrush;

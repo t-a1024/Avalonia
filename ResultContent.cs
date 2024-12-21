@@ -3,17 +3,11 @@ using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia;
 
-class ResultContent : ContentBase
+class ResultContent(State state, Window window, BackDrop backDrop, ScoreBoard scoreBoard) : ContentBase(state, window)
 {
-    private BackDrop backDrop;
-    private ScoreBoard scoreBoard;
+    private readonly BackDrop backDrop = backDrop;
+    private readonly ScoreBoard scoreBoard = scoreBoard;
     private Canvas canvas;
-
-    public ResultContent(State state, Window window, BackDrop backDrop, ScoreBoard scoreBoard) : base(state, window)
-    {
-        this.backDrop = backDrop;
-        this.scoreBoard = scoreBoard;
-    }
 
     public override void Update()
     {
